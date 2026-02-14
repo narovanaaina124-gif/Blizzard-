@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>❄️ BLIZZARD MADA · AVIATOR EXACT</title>
     <style>
-        * { m   argin: 0; padding: 0; box    -sizing: border-box; font-family: 'Inter', 'Courier New', monospace; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Courier New', monospace; }
         body { background: radial-gradient(circle at 20% 30%, #0a0f1e, #03050a); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 16px; }
         .blizzard-card { max-width: 820px; width: 100%; background: linear-gradient(165deg, #0b1a2c 0%, #0e1e32 100%); backdrop-filter: blur(8px); border: 2px solid rgba(0, 255, 255, 0.35); border-radius: 48px 48px 32px 32px; padding: 28px 24px; box-shadow: 0 25px 45px rgba(0, 180, 255, 0.25), 0 0 0 1px cyan inset; color: white; }
         .blizzard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; border-bottom: 1px solid #29e6ff70; padding-bottom: 18px; }
@@ -333,109 +333,3 @@
         
         // Prédiction
         let res = predictor.predict(hex, dec, lastHour, lastMinute, lastCrash);
-        
-        // Afficher premier chiffres
-        document.getElementById('firstHexDisplay').innerText = res.firstHexChar;
-        document.getElementById('firstHexValue').innerHTML = `(${res.firstHex})`;
-        document.getElementById('firstDecDisplay').innerText = res.firstDec;
-        document.getElementById('firstHexVal').innerText = res.firstHexChar;
-        document.getElementById('firstDecVal').innerText = res.firstDec;
-        
-        // Minutes à ajouter
-        document.getElementById('minutesToAdd').innerText = res.minutesToAdd;
-        document.getElementById('minutesCalc').innerHTML = `${res.firstHex} - ${res.firstDec} = ${res.minutesToAdd}`;
-        document.getElementById('diffVal').innerText = res.minutesToAdd;
-        
-        // ✅ SEGONDRA (miova arakaraky ny HEX)
-        document.getElementById('fixedSecondBadge').innerHTML = 
-            `⏱️ SEGONDRA: ${res.second} s (${res.last3Hex})`;
-        document.getElementById('secondVal').innerText = res.second;
-        
-        // Prédiction finale
-        document.getElementById('predictedTimeValue').innerText = res.predictionTime;
-        document.getElementById('predictedCrashValue').innerHTML = `${res.crashValue}x`;
-        document.getElementById('predictionDetail').innerText = res.predictionTime;
-        
-        // Historique
-        if (addHistory) {
-            let now = new Date();
-            let lastTimeStr = `${lastHour.toString().padStart(2,'0')}:${lastMinute.toString().padStart(2,'0')}`;
-            addHist({
-                crash: res.crashValue,
-                lastTime: lastTimeStr,
-                predictionTime: res.predictionTime,
-                minutesToAdd: res.minutesToAdd,
-                second: res.second,
-                hex: hex,
-                dec: dec.slice(0,6) + '…',
-                firstHex: res.firstHex,
-                firstDec: res.firstDec
-            });
-        }
-        
-        return res;
-    }
-
-    function setAutoRefresh(sec) {
-        if (autoInterval) clearInterval(autoInterval);
-        if (sec > 0) autoInterval = setInterval(() => updateDisplay(true), sec * 1000);
-    }
-
-    window.onload = function() {
-        loadHist();
-        
-        // Initialisation avec les valeurs de l'image
-        document.getElementById('inputHex').value = 'f960790f';
-        document.getElementById('inputDec').value = '480868672970581';
-        document.getElementById('inputLastHour').value = 2;
-        document.getElementById('inputLastMinute').value = 53;
-        document.getElementById('inputLastCrash').value = '35.55';
-        
-        // Event listeners
-        document.getElementById('predictBtn').onclick = (e) => {
-            e.preventDefault();
-            updateDisplay(true);
-        };
-        
-        document.getElementById('applySettingsBtn').onclick = () => {
-            updateDisplay(true);
-            setAutoRefresh(parseInt(document.getElementById('autoRefreshSelect').value));
-        };
-        
-        document.getElementById('clearHistoryBtn').onclick = clearHist;
-        
-        document.getElementById('autoRefreshSelect').onchange = function() {
-            setAutoRefresh(parseInt(this.value));
-        };
-        
-        document.getElementById('inputHex').oninput = function() {
-            this.value = this.value.replace(/[^0-9a-f]/gi, '').toLowerCase().slice(0, 8);
-            // Mise à jour automatique du badge segondra
-            let hex = this.value || 'f960790f';
-            let last3 = hex.slice(-3) || '000';
-            let second = parseInt(last3, 16) % 60;
-            document.getElementById('fixedSecondBadge').innerHTML = 
-                `⏱️ SEGONDRA: ${second} s (${last3})`;
-        };
-        
-        document.getElementById('inputDec').oninput = function() {
-            this.value = this.value.replace(/\D/g, '');
-        };
-        
-        document.getElementById('inputLastHour').onchange = function() {
-            let v = parseInt(this.value);
-            this.value = isNaN(v) ? 0 : Math.min(23, Math.max(0, v));
-        };
-        
-        document.getElementById('inputLastMinute').onchange = function() {
-            let v = parseInt(this.value);
-            this.value = isNaN(v) ? 0 : Math.min(59, Math.max(0, v));
-        };
-        
-        // Première mise à jour
-        updateDisplay(true);
-    };
-</script>
-
-</body>
-</html>
